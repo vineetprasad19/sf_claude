@@ -71,9 +71,17 @@ sf project retrieve start --manifest ".\manifest\package.xml" --target-org sf_de
   - Account_Record_Page FlexiPage retrieved and committed for reference
   - Test record created: Account `Name=test`, `claude_status__c=Open` (Id: `001gK000017IYfWQAW`)
 
+### Test data (as of 2026-06-03)
+- **DummyAccount001** (Id: `001gK000017K1D7QAK`) — Account with all writable fields populated with dummy values
+  - All text, picklist, phone, currency, number, date, URL, address fields set
+  - Skipped fields (system-managed or require related records): `OwnerId`, `ParentId`, `DandbCompanyId`, `OperatingHoursId`, `CleanStatus`, `Jigsaw`, `Tier`
+
 ### Lessons learned — Salesforce metadata
 - **FLS required after deploy:** New custom fields have no FLS by default. Always deploy a companion `PermissionSet` and assign it before using the field via the data API.
 - **Layout column balance:** `TwoColumnsTopToBottom` layouts must have equal item counts in both columns. An extra item in column 2 is silently dropped by Lightning Experience — add new fields to the shorter (left) column instead.
+- **State/Country picklists:** This org has State/Country picklists enabled. Use `BillingCountryCode`/`ShippingCountryCode` (ISO 2-letter, e.g. `US`) and `BillingStateCode`/`ShippingStateCode` (e.g. `CA`) instead of `BillingCountry`/`BillingState` when writing address data via the API.
+- **Read-only fields (cannot set via API):** `Tier`, `Jigsaw`, `CleanStatus` — these are D&B/Data.com managed fields; skip them when inserting records.
+- **Account Type picklist values:** Valid values are `Prospect`, `Customer - Direct`, `Customer - Channel`, `Channel Partner / Reseller`, `Installation Partner`, `Technology Partner`, `Other` — not plain `Customer`.
 
 ### Before creating a field or record — duplicate checks
 
