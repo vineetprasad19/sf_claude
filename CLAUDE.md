@@ -64,6 +64,17 @@ sf project retrieve start --manifest ".\manifest\package.xml" --target-org sf_de
 - **3,723 metadata files** total: 340 object definitions, 3,178 fields, 199 list views, 1 record type, 5 web links
 - All committed and pushed to the `sf_claude` GitHub repo
 
+### Custom fields added (as of 2026-06-03)
+- **Account.claude_status__c** — Text(10), label "Claude Status", deployed to org
+  - PermissionSet `ClaudeStatus` grants read/edit FLS; assigned to running user
+  - Field added to **Account-Account Layout** (left column, Account Information section)
+  - Account_Record_Page FlexiPage retrieved and committed for reference
+  - Test record created: Account `Name=test`, `claude_status__c=Open` (Id: `001gK000017IYfWQAW`)
+
+### Lessons learned — Salesforce metadata
+- **FLS required after deploy:** New custom fields have no FLS by default. Always deploy a companion `PermissionSet` and assign it before using the field via the data API.
+- **Layout column balance:** `TwoColumnsTopToBottom` layouts must have equal item counts in both columns. An extra item in column 2 is silently dropped by Lightning Experience — add new fields to the shorter (left) column instead.
+
 ### List all standard objects available in org
 ```powershell
 cd sf_metadata
