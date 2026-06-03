@@ -75,6 +75,21 @@ sf project retrieve start --manifest ".\manifest\package.xml" --target-org sf_de
 - **FLS required after deploy:** New custom fields have no FLS by default. Always deploy a companion `PermissionSet` and assign it before using the field via the data API.
 - **Layout column balance:** `TwoColumnsTopToBottom` layouts must have equal item counts in both columns. An extra item in column 2 is silently dropped by Lightning Experience — add new fields to the shorter (left) column instead.
 
+### Before creating a field or record — duplicate checks
+
+**Before deploying a new custom field**, check if it already exists:
+```powershell
+sf data query --query "SELECT QualifiedApiName, Label FROM FieldDefinition WHERE EntityDefinition.QualifiedApiName = 'Account' AND QualifiedApiName = 'claude_status__c'" --target-org sf_dev --use-tooling-api
+```
+
+**Before creating a record**, check for duplicates by querying on unique/key fields:
+```powershell
+# Example: check for existing Account with same Name
+sf data query --query "SELECT Id, Name, claude_status__c FROM Account WHERE Name = 'test'" --target-org sf_dev
+```
+
+If a matching field or record already exists, update it rather than creating a new one to avoid duplicates.
+
 ### List all standard objects available in org
 ```powershell
 cd sf_metadata
