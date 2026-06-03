@@ -69,12 +69,8 @@ sf project retrieve start --manifest ".\manifest\package.xml" --target-org sf_de
   - PermissionSet `ClaudeStatus` grants read/edit FLS; assigned to running user
   - Field added to **Account-Account Layout** (left column, Account Information section)
   - Account_Record_Page FlexiPage retrieved and committed for reference
-  - Test record created: Account `Name=test`, `claude_status__c=Open` (Id: `001gK000017IYfWQAW`)
+  - Test record created: Account `Name=test`, `claude_status__c=Open`
 
-### Test data (as of 2026-06-03)
-- **DummyAccount001** (Id: `001gK000017K1D7QAK`) — Account with all writable fields populated with dummy values
-  - All text, picklist, phone, currency, number, date, URL, address fields set
-  - Skipped fields (system-managed or require related records): `OwnerId`, `ParentId`, `DandbCompanyId`, `OperatingHoursId`, `CleanStatus`, `Jigsaw`, `Tier`
 
 ### Lessons learned — Salesforce metadata
 - **FLS required after deploy:** New custom fields have no FLS by default. Always deploy a companion `PermissionSet` and assign it before using the field via the data API.
