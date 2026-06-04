@@ -29,6 +29,18 @@ Prefer PowerShell syntax throughout this workspace:
 - Remote origin uses HTTPS with a classic PAT (scope: `repo`).
 - To push: `git push origin main` from `d:\ALL_OTHERS\Claude`
 
+## Salesforce MCP (Preferred)
+
+A `salesforce` MCP server is configured in `.mcp.json` and proxies to Salesforce's hosted `/mcp` endpoint using the `sf_dev` org session. **Always use MCP tools first** for all Salesforce operations:
+
+- SOQL queries and record reads/writes
+- Metadata deploy and retrieve
+- Org introspection (describe objects, picklist values, field definitions)
+
+MCP is preferred because it runs natively in the conversation with no shell overhead and reuses the existing `sf_dev` session automatically.
+
+**Use `sf` CLI only as a fallback** when the MCP server is not connected or a specific operation has no MCP equivalent (e.g., writing local XML files).
+
 ## Salesforce Org
 
 - **Org URL:** https://orgfarm-1dee1e0a4f-dev-ed.develop.my.salesforce.com
@@ -50,6 +62,9 @@ sf org login web --instance-url "https://orgfarm-1dee1e0a4f-dev-ed.develop.my.sa
 - **Manifest:** `sf_metadata\manifest\package.xml` — lists all 340 standard objects for bulk retrieve
 
 ### Retrieve metadata
+
+> **Prefer MCP.** SF CLI fallback (when MCP not available):
+
 ```powershell
 # Single object
 cd sf_metadata
@@ -81,6 +96,8 @@ sf project retrieve start --manifest ".\manifest\package.xml" --target-org sf_de
 
 ### Before creating a field or record — duplicate checks
 
+> **Prefer MCP for SOQL.** SF CLI fallback (when MCP not available):
+
 **Before deploying a new custom field**, check if it already exists:
 ```powershell
 sf data query --query "SELECT QualifiedApiName, Label FROM FieldDefinition WHERE EntityDefinition.QualifiedApiName = 'Account' AND QualifiedApiName = 'claude_status__c'" --target-org sf_dev --use-tooling-api
@@ -95,6 +112,9 @@ sf data query --query "SELECT Id, Name, claude_status__c FROM Account WHERE Name
 If a matching field or record already exists, update it rather than creating a new one to avoid duplicates.
 
 ### List all standard objects available in org
+
+> **Prefer MCP.** SF CLI fallback (when MCP not available):
+
 ```powershell
 cd sf_metadata
 sf org list metadata --metadata-type CustomObject --target-org sf_dev --json |
@@ -104,6 +124,9 @@ sf org list metadata --metadata-type CustomObject --target-org sf_dev --json |
 ```
 
 ### Rebuild package.xml (if org changes)
+
+> SF CLI only — no MCP equivalent for writing local XML files.
+
 ```powershell
 cd sf_metadata
 $objects = sf org list metadata --metadata-type CustomObject --target-org sf_dev --json |
